@@ -2,6 +2,7 @@ import React from "react";
 import AiAlert from "../components/AiAlert";
 import HeaderLand from "../components/HeaderLand";
 import BuildYourResume from "../components/BuildYourResume";
+import DontTakeOurWord from "../components/DontTakeOurWord";
 
 const Home = () => {
   return (
@@ -9,6 +10,7 @@ const Home = () => {
       <AiAlert />
       <HeaderLand />
       <BuildYourResume />
+      <DontTakeOurWord />
     </div>
   );
 };
