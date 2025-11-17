@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../image/logo.svg";
 import aiProfile1 from "../image/ai-profile-1.jpg";
 import aiProfile2 from "../image/ai-profile-2.jpg";
@@ -9,7 +9,12 @@ import farmer from "../image/framer.svg";
 import microsoft from "../image/microsoft.svg";
 import huawei from "../image/huawei.svg";
 import walmart from "../image/walmart.svg";
+import { useNavigate } from "react-router";
+
 const HeaderLand = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen pb-20">
       <nav className="z-50 flex items-center justify-between w-full py-4 px-6 md:px-16 lg:px-24 xl:px-40 text-sm">
@@ -21,10 +26,22 @@ const HeaderLand = () => {
           <li className="hover:text-green-600 transition">Contact</li>
         </ul>
         <div className="flex gap-2">
-          <button className="hidden md:block px-6 py-2 bg-green-500 hover:bg-green-700 active:scale-95 transition-all rounded-full text-white cursor-pointer">
+          <button
+            className="hidden md:block px-6 py-2 bg-green-500 hover:bg-green-700 active:scale-95 transition-all rounded-full text-white cursor-pointer"
+            onClick={() => {
+              setIsOpen(false);
+              navigate("/GetStartLN");
+            }}
+          >
             Get Started
           </button>
-          <button className="hidden md:block px-6 py-2 border active:scale-95 hover:bg-slate-50 transition-all rounded-full text-slate-700 hover:text-slate-900 cursor-pointer">
+          <button
+            className="hidden md:block px-6 py-2 border active:scale-95 hover:bg-slate-50 transition-all rounded-full text-slate-700 hover:text-slate-900 cursor-pointer"
+            onClick={() => {
+              setIsOpen(false);
+              navigate("/Login");
+            }}
+          >
             Login
           </button>
         </div>
