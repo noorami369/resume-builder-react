@@ -1,39 +1,60 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { useUserStore } from "../store/useUserStore";
+import axios from "../api/axios";
+import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+
+interface NewUserType {
+  email: string;
+  password: string;
+}
 
 export const Login = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  //   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    defaultValues: { email: "", password: "" },
+  });
 
-  const login = useUserStore((state) => state.login);
+  const { mutate, data, isSuccess } = useMutation({
+    mutationFn: async (newUser: NewUserType) => {
+      const { data } = await axios.post("/api/users/login", {
+        email: newUser.email,
+        password: newUser.password,
+      });
+      return data;
+    },
+  });
 
-  const handleLogin = () => {
-    const isValid = login(email, pass);
-
-    if (isValid) {
-      console.log("Login successful!");
-
-      navigate("/Dashboard"); // صفحه‌ای که بعدش می‌خوای بری
-    } else {
-      console.log("Email or password is incorrect!");
+  useEffect(() => {
+    if (isSuccess) {
+      localStorage.setItem("token", data.token);
+      navigate("/Dashboard");
     }
-  };
+  }, [isSuccess]);
 
   return (
     <>
       <div className="w-full h-full bg-[#f1f0f0] flex justify-center items-center ">
-        <div className="w-[350px] h-[402px] bg-white rounded-[18px] border border-gray-400 flex flex-col justify-center items-center ">
+        <div className="w-[350px] h-[402px] bg-white rounded-[18px] border-1 border-gray-400 flex flex-col justify-center items-center ">
           <h1 className="text-gray-900 text-3xl mt-10 font-medium">Login</h1>
           <p className="text-gray-500  text-sm mt-2">
             Please login to continue
           </p>
 
-          <form className="flex flex-col justify-center items-center gap-[18px]    mt-5 ">
-            <div className="flex gap-2 justify-center items-center w-[284px] h-12   border border-gray-300/80 rounded-[30px]">
+          <form
+            className="flex flex-col justify-center items-center gap-[18px]    mt-[20px] "
+            onSubmit={handleSubmit(({ email, password }) => {
+              mutate({ email: email, password: password });
+            })}
+          >
+            <div className="flex gap-[8px] justify-center items-center w-[284px] h-[48px]   border-1 border-gray-300/80 rounded-[30px]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="13"
@@ -54,12 +75,11 @@ export const Login = () => {
                 type="text"
                 className="border-none"
                 placeholder="Email id"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                {...register("email", { required: true })}
               />
             </div>
 
-            <div className="flex gap-2 justify-center items-center w-[284px] h-12  border border-gray-300/80 rounded-[30px]">
+            <div className="flex gap-[8px] justify-center items-center w-[284px] h-[48px]  border-1 border-gray-300/80 rounded-[30px]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="13"
@@ -80,31 +100,30 @@ export const Login = () => {
                 type="text"
                 className="border-none"
                 placeholder="Password"
-                value={pass}
-                onChange={(e) => setPass(e.target.value)}
+                {...register("password", { required: true })}
               />
             </div>
+
+            <div className="flex justify-start ml-[80px]  w-full ">
+              <p className="cursor-pointer text-[#19CE61] text-[14px] mt-[20px]">
+                Forget password?
+              </p>
+            </div>
+
+            <button
+              className="w-[284px] h-[44px] bg-[#19CE61] mt-[10px] rounded-[30px] flex justify-center items-center text-white cursor-pointer"
+              type="submit"
+            >
+              Login
+            </button>
           </form>
 
-          <div className="flex justify-start ml-20  w-full ">
-            <p className="cursor-pointer text-[#19CE61] text-[14px] mt-5">
-              Forget password?
-            </p>
-          </div>
-
-          <div
-            className="w-[284px] h-11 bg-[#19CE61] mt-2.5 rounded-[30px] flex justify-center items-center text-white cursor-pointer"
-            onClick={handleLogin}
-          >
-            Login
-          </div>
-
-          <p className="cursor-pointer text-gray-500 text-[14px] mt-2.5 mb-[30px]">
+          <p className="cursor-pointer text-gray-500 text-[14px] mt-[10px] mb-[30px]">
             Please login to continue?
             <span
               className="text-[#19CE61]"
               onClick={() => {
-                setIsOpen(false);
+                // setIsOpen(false);
                 navigate("/GetStartLN");
               }}
             >
